@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+
+    <!--    @Bean-->
+    <bean id="xmlClassA" class="com.xiaofei.framework.xiaofei.fei.fei.XmlClassA">
+        <property name="s" value="AAA"></property>
+        <property name="i" value="122"></property>
+    </bean>
+
+    <bean id="xmlClassB" class="com.xiaofei.framework.xiaofei.fei.fei.XmlClassB">
+        <!--        userService里面的一个属性userDao,用上面的bean注入;-->
+        <property name="s" value="BBB"></property>
+        <property name="i" value="122333"></property>
+        <property name="xmlClassA" ref="xmlClassA"></property>
+    </bean>
+</beans>
