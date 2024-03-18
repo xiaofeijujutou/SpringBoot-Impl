@@ -61,7 +61,7 @@ public class Test implements BeanNameAware, InitializingBean, BeanPostProcessor,
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) {
 
-        //Object jdk = jdk((Test) bean);
+        //return jdk((Test) bean);
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(Test.class);
         //设置回调函数;

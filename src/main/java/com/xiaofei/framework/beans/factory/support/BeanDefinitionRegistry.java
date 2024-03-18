@@ -1,6 +1,7 @@
 package com.xiaofei.framework.beans.factory.support;
 
-import com.xiaofei.framework.beans.BeanDefinition;
+
+import com.xiaofei.framework.beans.factory.config.BeanDefinition;
 
 /**
  * @Description: Created by IntelliJ IDEA.

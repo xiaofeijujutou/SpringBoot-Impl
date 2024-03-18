@@ -1,9 +1,11 @@
-package com.xiaofei.framework.beans.factory.support;
+package com.xiaofei.framework.beans.factory.annotation;
 
 import com.xiaofei.framework.anno.Component;
 import com.xiaofei.framework.anno.ComponentScan;
 import com.xiaofei.framework.anno.Scope;
-import com.xiaofei.framework.beans.BeanDefinition;
+import com.xiaofei.framework.beans.factory.support.BeanDefinitionReader;
+import com.xiaofei.framework.beans.factory.support.BeanDefinitionRegistry;
+import com.xiaofei.framework.beans.factory.support.SimpleBeanDefinitionRegistry;
 import com.xiaofei.framework.utils.StringUtils;
 
 import java.beans.Introspector;
@@ -88,7 +90,7 @@ public class AnnotationBeanDefinitionReader implements BeanDefinitionReader {
                 Class<?> clazz = classLoader.loadClass(classRelativeName);
                 //如果这个类含有了Component注解
                 if (clazz.isAnnotationPresent(Component.class)) {
-                    BeanDefinition beanDefinition = new BeanDefinition();
+                    AnnotationBeanDefinition beanDefinition = new AnnotationBeanDefinition();
                     Component component = clazz.getAnnotation(Component.class);
                     String beanName = component.value();
                     //如果没有设置beanName,默认用小驼峰;

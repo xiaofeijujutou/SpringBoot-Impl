@@ -1,10 +1,12 @@
 package com.xiaofei.framework.context.support;
 
-import com.xiaofei.framework.beans.BeanDefinition;
+
+import com.sun.istack.internal.Nullable;
 import com.xiaofei.framework.beans.MultiplePropertyValues;
 import com.xiaofei.framework.beans.PropertyValue;
 import com.xiaofei.framework.beans.factory.support.BeanDefinitionRegistry;
-import com.xiaofei.framework.beans.factory.support.XmlBeanDefinitionReader;
+import com.xiaofei.framework.beans.factory.xml.XmlBeanDefinition;
+import com.xiaofei.framework.beans.factory.xml.XmlBeanDefinitionReader;
 import com.xiaofei.framework.utils.ClassUtils;
 import com.xiaofei.framework.utils.StringUtils;
 
@@ -40,7 +42,17 @@ public class ClassPathXmlApplicationContext extends AbstractApplicationContext {
         }
     }
 
-
+    /**
+     * 调用Bean读取器的根据文件读取方法,将配置文件全部扫描成BeanDefinition
+     * @throws Exception
+     */
+    @Override
+    public void refresh() throws Exception {
+        //Reader获取所有的注册信息存储到了自身对象;
+        beanDefinitionReader.loadBeanDefinitions();
+        //完成所有bean初始化,也就是全部存储到容器中
+        finishBeanInitialization();
+    }
     /**
      * 根据Bean的名字来获取Bean;
      * 判断容器中是否包含Bean对象,如果包含就返回,不包含就创建;
@@ -49,18 +61,21 @@ public class ClassPathXmlApplicationContext extends AbstractApplicationContext {
      * @throws Exception
      */
     public Object getBean(String name) throws Exception {
-        Object o = this.singletonObjects.get(name);
+        //应该先去一级缓存找,没找到去二级缓存,找到就返回;
+        Object o = getSingleton(name);
         if (o != null){
             return o;
         }
         //获取注册表;
         BeanDefinitionRegistry registry = beanDefinitionReader.getRegistry();
         //注册表中获取注册信息;
-        BeanDefinition beanDefinition = registry.getBeanDefinition(name);
+        XmlBeanDefinition beanDefinition = (XmlBeanDefinition)registry.getBeanDefinition(name);
         //获取类名,通过反射获取实例;
         String className = beanDefinition.getClassName();
         Class<?> clazz = Class.forName(className);
+        //此时是半成品,半成品就应该丢入二缓;
         Object beanObj = clazz.newInstance();
+        earlySingletonObjects.put(name, beanObj);
         //此时已经new好了一个对象,但是属性或者依赖还没有配置好;
         MultiplePropertyValues propertyValues = beanDefinition.getMultiplePropertyValues();
         for (PropertyValue property : propertyValues) {
@@ -90,10 +105,12 @@ public class ClassPathXmlApplicationContext extends AbstractApplicationContext {
                 method.invoke(beanObj, methodArg);
             }
         }
-        //返回对象之前把创建好的对象放入Bean容器中;
+        //返回对象之前把创建好的对象放入Bean容器中,然后删除其他缓存残留数据;
         singletonObjects.put(name, beanObj);
+        earlySingletonObjects.remove(name);
         return beanObj;
     }
+
 
 
 
@@ -105,10 +122,5 @@ public class ClassPathXmlApplicationContext extends AbstractApplicationContext {
         return clazz.cast(bean);
     }
 
-    @Override
-    public void refresh() throws Exception {
-        //Reader获取所有的注册信息存储到了自身对象;
-        beanDefinitionReader.loadBeanDefinitions();
-        finishBeanInitialization();
-    }
+
 }

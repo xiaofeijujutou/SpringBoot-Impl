@@ -1,13 +1,14 @@
 package com.xiaofei.framework.context.support;
 
 import com.xiaofei.framework.anno.Autowired;
-import com.xiaofei.framework.beans.BeanDefinition;
 import com.xiaofei.framework.beans.factory.BeanNameAware;
 import com.xiaofei.framework.beans.factory.BeanPostProcessor;
 import com.xiaofei.framework.beans.factory.InitializingBean;
-import com.xiaofei.framework.beans.factory.support.AnnotationBeanDefinitionReader;
+import com.xiaofei.framework.beans.factory.annotation.AnnotationBeanDefinition;
+import com.xiaofei.framework.beans.factory.annotation.AnnotationBeanDefinitionReader;
+import com.xiaofei.framework.beans.factory.config.BeanDefinition;
+
 import com.xiaofei.framework.beans.factory.support.BeanDefinitionRegistry;
-import com.xiaofei.framework.beans.factory.support.XmlBeanDefinitionReader;
 
 import java.lang.reflect.Field;
 
@@ -43,16 +44,17 @@ public class AnnotationApplicationContext extends AbstractApplicationContext{
 
     @Override
     public Object getBean(String name) throws Exception {
-        Object o = this.singletonObjects.get(name);
+        Object o = getSingleton(name);
         if (o != null){
             return o;
         }
         //获取注册表;
         BeanDefinitionRegistry registry = beanDefinitionReader.getRegistry();
-        BeanDefinition beanDefinition = registry.getBeanDefinition(name);
+        AnnotationBeanDefinition beanDefinition = (AnnotationBeanDefinition)registry.getBeanDefinition(name);
         //注解里面直接有class字节码对象;
         Class<?> clazz = beanDefinition.getClazz();
         Object beanObj = clazz.newInstance();
+        earlySingletonObjects.put(name, beanObj);
         //属性注入;
         for (Field field : clazz.getDeclaredFields()) {
             field.setAccessible(true);
@@ -71,6 +73,7 @@ public class AnnotationApplicationContext extends AbstractApplicationContext{
         }
 
         //此时已经new好了一个对象,但是属性或者依赖还没有 配置好;
+        earlySingletonObjects.remove(name);
         singletonObjects.put(name, beanObj);
         return beanObj;
     }
