@@ -1,6 +1,8 @@
 package com.xiaofei.framework.beans.factory.support;
 
-import com.xiaofei.framework.beans.BeanDefinition;
+
+
+import com.xiaofei.framework.beans.factory.config.BeanDefinition;
 
 import java.util.HashMap;
 import java.util.Map;

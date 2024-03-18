@@ -1,11 +1,14 @@
 package com.xiaofei.framework.context.support;
 
+import com.sun.istack.internal.Nullable;
 import com.xiaofei.framework.beans.factory.support.BeanDefinitionReader;
 import com.xiaofei.framework.beans.factory.support.BeanDefinitionRegistry;
 import com.xiaofei.framework.context.ApplicationContext;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -29,6 +32,21 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
     protected Map<String, Object> singletonObjects = new ConcurrentHashMap<>(64);
 
     /**
+     * 二级缓存
+     */
+
+    protected final Map<String, Object> earlySingletonObjects = new HashMap<>(16);
+    /**
+     * 三级缓存
+     */
+    //private final Map<String, ObjectFactory<?>> singletonFactories = new HashMap<>(16);
+
+
+    /**
+     * 记录所有的至少被创建过一次的bean;
+     */
+    private final Set<String> alreadyCreated = Collections.newSetFromMap(new ConcurrentHashMap<>(256));
+    /**
      * 抽象类必须要传入BeanDefinitionReader;
      * @param beanDefinitionReader
      */
@@ -50,5 +68,22 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
             //循环调用抽象方法,实际调用子类实现方法;
             getBean(beanDefinitionName);
         }
+    }
+
+    /**
+     * spring从三级缓存中找bean;
+     * @param beanName
+     * @return
+     */
+    @Nullable
+    protected Object getSingleton(String beanName) {
+        //一级缓存里面找;
+        Object singletonObject = this.singletonObjects.get(beanName);
+        //二级缓存里面找;
+        if (singletonObject == null && this.earlySingletonObjects.containsKey(beanName)) {
+            //一级缓存为空,但是二级缓存有,那就赋值;
+            singletonObject = this.earlySingletonObjects.get(beanName);
+        }
+        return singletonObject;
     }
 }

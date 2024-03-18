@@ -1,15 +1,19 @@
 package com.xiaofei.framework.xiaofei.fei.fei;
 
+import com.xiaofei.framework.anno.Autowired;
+import com.xiaofei.framework.anno.Component;
+
 /**
  * @Description: Created by IntelliJ IDEA.
  * @Author : 小肥居居头
  * @create 2024/3/17 22:52
  */
 
-
+@Component
 public class XmlClassB {
     private Integer i;
     private String s;
+    @Autowired
     private XmlClassA xmlClassA;
 
     @Override

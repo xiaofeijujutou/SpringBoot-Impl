@@ -10,6 +10,7 @@
     <bean id="xmlClassA" class="com.xiaofei.framework.xiaofei.fei.fei.XmlClassA">
         <property name="s" value="AAA"></property>
         <property name="i" value="122"></property>
+        <property name="xmlClassB" ref="xmlClassB"></property>
     </bean>
 
     <bean id="xmlClassB" class="com.xiaofei.framework.xiaofei.fei.fei.XmlClassB">

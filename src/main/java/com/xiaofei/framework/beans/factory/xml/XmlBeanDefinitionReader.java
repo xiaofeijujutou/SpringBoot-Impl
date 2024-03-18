@@ -1,8 +1,10 @@
-package com.xiaofei.framework.beans.factory.support;
+package com.xiaofei.framework.beans.factory.xml;
 
-import com.xiaofei.framework.beans.BeanDefinition;
 import com.xiaofei.framework.beans.MultiplePropertyValues;
 import com.xiaofei.framework.beans.PropertyValue;
+import com.xiaofei.framework.beans.factory.support.BeanDefinitionReader;
+import com.xiaofei.framework.beans.factory.support.BeanDefinitionRegistry;
+import com.xiaofei.framework.beans.factory.support.SimpleBeanDefinitionRegistry;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
@@ -61,7 +63,7 @@ public class XmlBeanDefinitionReader implements BeanDefinitionReader {
         List<Element> beans = rootElement.elements("bean");
         for (Element beanElement : beans) {
             //封装<bean>标签的基础属性成一个BeanDefinition;
-            BeanDefinition beanDefinition = new BeanDefinition();
+            XmlBeanDefinition beanDefinition = new XmlBeanDefinition();
             //设置<bean>标签基础属性:
             String id = beanElement.attributeValue("id");
             String className = beanElement.attributeValue("class");
