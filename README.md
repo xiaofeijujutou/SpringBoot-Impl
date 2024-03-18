@@ -5,4 +5,6 @@ springcore框架简易版;
 
 完成ClassPathXmlApplicationContext和AnnotationApplicationContext基本开发;
 
+完成两级缓存解决循环依赖问题;
+
 遵守设计模式七大原则;
